@@ -39,12 +39,19 @@ var recentLeapYear = 2016
 type SimpleChaincode struct {
 }
 
-func generateCUSIPSuffix(issueDate string, days int) (string, error) {
+func generateCUSIPSuffix(issueDate string, age string) (string, error) {
 
 	t, err := msToTime(issueDate)
 	if err != nil {
 		return "", err
 	}
+	
+	days, err := strconv.Atoi(age)
+    if err != nil {
+        // handle error
+        fmt.Println(err)
+		return "", err
+    }
 
 	maturityDate := t.AddDate(0, 0, days)
 	month := int(maturityDate.Month())
@@ -74,16 +81,16 @@ func msToTime(ms string) (time.Time, error) {
 
 type Owner struct {
 	Company string    `json:"company"`
-	Quantity int      `json:"quantity"`
+	Quantity string   `json:"quantity"`
 }
 
 type CP struct {
 	CUSIP     string  `json:"cusip"`
-	Ticker    string  `json:"ticker"`
-	Par       string  `json:"par"`
-	Qty       string  `json:"qty"`
-	Discount  string  `json:"discount"`
-	Maturity  string  `json:"maturity"`
+	Name      string  `json:"ticker"`
+	Gender    string  `json:"par"`
+	Age       string  `json:"qty"`
+	City  	  string  `json:"discount"`
+	State	  string  `json:"maturity"`
 	Owners    []Owner `json:"owner"`
 	Issuer    string  `json:"issuer"`
 	IssueDate string  `json:"issueDate"`
@@ -280,26 +287,26 @@ func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []
 	}
 	fmt.Println("-----------------Everything goes fine-------------")
 	
-/*	account.AssetsIds = append(account.AssetsIds, cp.CUSIP)
+	account.AssetsIds = append(account.AssetsIds, cp.CUSIP)
 
 	// Set the issuer to be the owner of all quantity
 	var owner Owner
 	owner.Company = cp.Issuer
-	owner.Quantity = cp.Qty
+	owner.Quantity = cp.Age
 	
 	cp.Owners = append(cp.Owners, owner)
 
-	suffix, err := generateCUSIPSuffix(cp.IssueDate, cp.Maturity)
+	suffix, err := generateCUSIPSuffix(cp.IssueDate, cp.Age)
 	if err != nil {
 		fmt.Println("Error generating cusip")
 		return nil, errors.New("Error generating CUSIP")
 	}
-
+	fmt.Println("-------------CUSIP SUFFIX CREATED----------"+suffix)
 	fmt.Println("Marshalling CP bytes")
 	cp.CUSIP = account.Prefix + suffix
-	
+	fmt.Println("-----------------Everything goes fine-------------")
 	fmt.Println("Getting State on CP " + cp.CUSIP)
-	cpRxBytes, err := stub.GetState(cpPrefix+cp.CUSIP)
+/*	cpRxBytes, err := stub.GetState(cpPrefix+cp.CUSIP)
 	if cpRxBytes == nil {
 		fmt.Println("CUSIP does not exist, creating it")
 		cpBytes, err := json.Marshal(&cp)
