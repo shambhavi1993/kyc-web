@@ -271,7 +271,6 @@
 			fmt.Println("error invalid paper issue")
 			return nil, errors.New("Invalid commercial paper issue")
 		}
-		fmt.Println("-----------------Unmarshalling Done--------------")
 		//generate the CUSIP
 		//get account prefix
 		fmt.Println("Getting state of - " + accountPrefix + cp.Issuer)
