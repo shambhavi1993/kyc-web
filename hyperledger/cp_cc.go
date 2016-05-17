@@ -273,6 +273,7 @@ func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []
 		fmt.Println("Error Getting state of - " + accountPrefix + cp.Issuer)
 		return nil, errors.New("Error retrieving account " + cp.Issuer)
 	}
+	fmt.Println("-----------------Everything goes good---------")
 /*	err = json.Unmarshal(accountBytes, &account)
 	if err != nil {
 		fmt.Println("Error Unmarshalling accountBytes")
