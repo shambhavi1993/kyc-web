@@ -256,7 +256,7 @@ func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []
 
 	var cp CP
 	var err error
-	//var account Account
+	var account Account
 
 	fmt.Println("Unmarshalling CP")
 	err = json.Unmarshal([]byte(args[0]), &cp)
@@ -273,14 +273,14 @@ func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []
 		fmt.Println("Error Getting state of - " + accountPrefix + cp.Issuer)
 		return nil, errors.New("Error retrieving account " + cp.Issuer)
 	}
-	fmt.Println("-----------------Everything goes good---------")
-/*	err = json.Unmarshal(accountBytes, &account)
+	err = json.Unmarshal(accountBytes, &account)
 	if err != nil {
 		fmt.Println("Error Unmarshalling accountBytes")
 		return nil, errors.New("Error retrieving account " + cp.Issuer)
 	}
+	fmt.Println("-----------------Everything goes fine-------------")
 	
-	account.AssetsIds = append(account.AssetsIds, cp.CUSIP)
+/*	account.AssetsIds = append(account.AssetsIds, cp.CUSIP)
 
 	// Set the issuer to be the owner of all quantity
 	var owner Owner
