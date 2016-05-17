@@ -80,18 +80,6 @@ type Owner struct {
 type CP struct {
 	CUSIP     string  `json:"cusip"`
 	Ticker    string  `json:"ticker"`
-	Par       float64 `json:"par"`
-	Qty       int     `json:"qty"`
-	Discount  float64 `json:"discount"`
-	Maturity  int     `json:"maturity"`
-	Owners    []Owner `json:"owner"`
-	Issuer    string  `json:"issuer"`
-	IssueDate string  `json:"issueDate"`
-}
-
-type KYC struct {
-	CUSIP     string  `json:"cusip"`
-	Ticker    string  `json:"ticker"`
 	Par       string  `json:"par"`
 	Qty       string  `json:"qty"`
 	Discount  string  `json:"discount"`
@@ -112,8 +100,8 @@ type Transaction struct {
 	CUSIP       string   `json:"cusip"`
 	FromCompany string   `json:"fromCompany"`
 	ToCompany   string   `json:"toCompany"`
-	Quantity    int      `json:"quantity"`
-	Discount    float64  `json:"discount"`
+	Quantity    string   `json:"quantity"`
+	Discount    string   `json:"discount"`
 }
 
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
@@ -163,14 +151,14 @@ func (t *SimpleChaincode) createAccounts(stub *shim.ChaincodeStub, args []string
 		fmt.Println("created account" + accountPrefix + account.ID)
 	}
 
-	fmt.Println("Accounts created")
+	fmt.Println("Accounts created") 
 	return nil, nil
 
 }
 
 func (t *SimpleChaincode) createAccount(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
     // Obtain the username to associate with the account
-    if len(args) != 1 {
+ if len(args) != 1 {
         fmt.Println("Error obtaining username")
         return nil, errors.New("createAccount accepts a single username argument")
     }
@@ -227,9 +215,8 @@ func (t *SimpleChaincode) createAccount(stub *shim.ChaincodeStub, args []string)
             return nil, errors.New("failed to initialize an account for " + account.ID + " => " + err.Error())
         }
         
-    }
-    
-    
+    } 
+
 }
 
 func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
@@ -268,9 +255,8 @@ func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []
 	}
 
 	var cp CP
-	var kyc error
 	var err error
-	var account Account
+	//var account Account
 
 	fmt.Println("Unmarshalling CP")
 	err = json.Unmarshal([]byte(args[0]), &cp)
@@ -278,10 +264,10 @@ func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []
 		fmt.Println("error invalid paper issue")
 		return nil, errors.New("Invalid commercial paper issue")
 	}
-
+	fmt.Println("-----------------Unmarshalling Done--------------")
 	//generate the CUSIP
 	//get account prefix
-	fmt.Println("Getting state of - " + accountPrefix + cp.Issuer)
+/*	fmt.Println("Getting state of - " + accountPrefix + cp.Issuer)
 	accountBytes, err := stub.GetState(accountPrefix + cp.Issuer)
 	if err != nil {
 		fmt.Println("Error Getting state of - " + accountPrefix + cp.Issuer)
@@ -410,13 +396,14 @@ func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []
 
 		fmt.Println("Updated commercial paper %+v\n", cprx)
 		return nil, nil
-	}
+	} */
+	return nil, nil
 }
 
 
 func GetAllCPs(stub *shim.ChaincodeStub) ([]CP, error){
-	
-	var allCPs []CP
+fmt.Println("--------------In GetAllCPs-------------")	
+/*	var allCPs []CP
 	
 	// Get list of all the keys
 	keysBytes, err := stub.GetState("PaperKeys")
@@ -446,12 +433,14 @@ func GetAllCPs(stub *shim.ChaincodeStub) ([]CP, error){
 		allCPs = append(allCPs, cp)
 	}	
 	
-	return allCPs, nil
+	return allCPs, nil */
+	return nil, nil		//Added by Ankit
 }
 
 func GetCP(cpid string, stub *shim.ChaincodeStub) (CP, error){
+fmt.Println("--------------In GetCP-------------")
 	var cp CP
-
+/*
 	cpBytes, err := stub.GetState(cpid)
 	if err != nil {
 		fmt.Println("Error retrieving cp " + cpid)
@@ -463,14 +452,15 @@ func GetCP(cpid string, stub *shim.ChaincodeStub) (CP, error){
 		fmt.Println("Error unmarshalling cp " + cpid)
 		return cp, errors.New("Error unmarshalling cp " + cpid)
 	}
-		
-	return cp, nil
+	*/	
+	return cp, nil 
 }
 
 
 func GetCompany(companyID string, stub *shim.ChaincodeStub) (Account, error){
+fmt.Println("--------------In GetCompany-------------")
 	var company Account
-	companyBytes, err := stub.GetState(accountPrefix+companyID)
+/*	companyBytes, err := stub.GetState(accountPrefix+companyID)
 	if err != nil {
 		fmt.Println("Account not found " + companyID)
 		return company, errors.New("Account not found " + companyID)
@@ -481,13 +471,14 @@ func GetCompany(companyID string, stub *shim.ChaincodeStub) (Account, error){
 		fmt.Println("Error unmarshalling account " + companyID + "\n err:" + err.Error())
 		return company, errors.New("Error unmarshalling account " + companyID)
 	}
-	
-	return company, nil
+	*/
+	return company, nil 
 }
 
 
 // Still working on this one
 func (t *SimpleChaincode) transferPaper(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+fmt.Println("--------------In transferPaper-------------")
 	/*		0
 		json
 	  	{
@@ -498,7 +489,7 @@ func (t *SimpleChaincode) transferPaper(stub *shim.ChaincodeStub, args []string)
 		}
 	*/
 	//need one arg
-	if len(args) != 1 {
+/*	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting commercial paper record")
 	}
 	
@@ -661,13 +652,14 @@ func (t *SimpleChaincode) transferPaper(stub *shim.ChaincodeStub, args []string)
 		return nil, errors.New("Error writing the cp back")
 	}
 	
-	fmt.Println("Successfully completed Invoke")
+	fmt.Println("Successfully completed Invoke") */
 	return nil, nil
 }
 
 func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+fmt.Println("----------------in Query------------")
 	//need one arg
-	if len(args) < 1 {
+/*	if len(args) < 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting ......")
 	}
 
@@ -727,7 +719,8 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 
 		fmt.Println("All success, returning from generic")
 		return bytes, nil		
-	}
+	} */
+	return nil, nil		//Added by ankit
 }
 
 func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
