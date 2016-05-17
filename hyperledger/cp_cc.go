@@ -89,6 +89,18 @@ type CP struct {
 	IssueDate string  `json:"issueDate"`
 }
 
+type KYC struct {
+	CUSIP     string  `json:"cusip"`
+	Ticker    string  `json:"ticker"`
+	Par       string  `json:"par"`
+	Qty       string  `json:"qty"`
+	Discount  string  `json:"discount"`
+	Maturity  string  `json:"maturity"`
+	Owners    []Owner `json:"owner"`
+	Issuer    string  `json:"issuer"`
+	IssueDate string  `json:"issueDate"`
+}
+
 type Account struct {
 	ID          string  `json:"id"`
 	Prefix      string  `json:"prefix"`
