@@ -421,7 +421,7 @@
 		var keys []string
 		err = json.Unmarshal(keysBytes, &keys) 	
 		if err != nil {
-			fmt.Println("Error unmarshalling paper keys")
+			fmt.Println("Error unmarshalling paper keys----------"+err)
 			return nil, errors.New("Error unmarshalling paper keys")
 		}
 
