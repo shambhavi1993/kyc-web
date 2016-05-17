@@ -267,14 +267,13 @@ func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []
 	fmt.Println("-----------------Unmarshalling Done--------------")
 	//generate the CUSIP
 	//get account prefix
-	fmt.Println("---------------------Ankit----------------")
 	fmt.Println("Getting state of - " + accountPrefix + cp.Issuer)
-/*	accountBytes, err := stub.GetState(accountPrefix + cp.Issuer)
+	accountBytes, err := stub.GetState(accountPrefix + cp.Issuer)
 	if err != nil {
 		fmt.Println("Error Getting state of - " + accountPrefix + cp.Issuer)
 		return nil, errors.New("Error retrieving account " + cp.Issuer)
 	}
-	err = json.Unmarshal(accountBytes, &account)
+/*	err = json.Unmarshal(accountBytes, &account)
 	if err != nil {
 		fmt.Println("Error Unmarshalling accountBytes")
 		return nil, errors.New("Error retrieving account " + cp.Issuer)
