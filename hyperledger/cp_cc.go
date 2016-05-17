@@ -419,7 +419,7 @@
 			return nil, errors.New("Error retrieving paper keys")
 		}
 		var keys []string
-		err = json.Unmarshal(keysBytes, &keys)
+		err = json.Unmarshal(keysBytes, &keys) 	
 		if err != nil {
 			fmt.Println("Error unmarshalling paper keys")
 			return nil, errors.New("Error unmarshalling paper keys")
@@ -427,6 +427,7 @@
 
 		// Get all the cps
 		for _, value := range keys {
+			fmt.Println("------------------------Keys-----------------"+value)
 			cpBytes, err := stub.GetState(value)
 			
 			var cp CP
