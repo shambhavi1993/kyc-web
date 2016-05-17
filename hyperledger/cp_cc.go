@@ -268,7 +268,7 @@ func (t *SimpleChaincode) issueCommercialPaper(stub *shim.ChaincodeStub, args []
 	}
 
 	var cp CP
-	var kyc KYC
+	var kyc error
 	var err error
 	var account Account
 
