@@ -410,7 +410,7 @@
 
 	func GetAllCPs(stub *shim.ChaincodeStub) ([]CP, error){
 	fmt.Println("--------------In GetAllCPs-------------")	
-	/*	var allCPs []CP
+		var allCPs []CP
 		
 		// Get list of all the keys
 		keysBytes, err := stub.GetState("PaperKeys")
@@ -439,9 +439,8 @@
 			fmt.Println("Appending CP" + value)
 			allCPs = append(allCPs, cp)
 		}	
-		
-		return allCPs, nil */
-		return nil, nil		//Added by Ankit
+		fmt.Println("-----------------------Everything goes fine in GetAllCPs------------------")
+		return allCPs, nil 
 	}
 
 	func GetCP(cpid string, stub *shim.ChaincodeStub) (CP, error){
@@ -666,7 +665,7 @@
 	func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Println("----------------in Query------------")
 		//need one arg
-	/*	if len(args) < 1 {
+		if len(args) < 1 {
 			return nil, errors.New("Incorrect number of arguments. Expecting ......")
 		}
 
@@ -685,7 +684,7 @@
 				fmt.Println("All success, returning allcps")
 				return allCPsBytes, nil		 
 			}
-		} else if args[0] == "GetCP" {
+		} /*else if args[0] == "GetCP" {
 			fmt.Println("Getting particular cp")
 			cp, err := GetCP(args[1], stub)
 			if err != nil {
