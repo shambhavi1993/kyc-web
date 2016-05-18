@@ -295,7 +295,7 @@
 
 		// Set the issuer to be the owner of all quantity
 		var owner Owner
-		owner.Company = cp.Issuer
+		owner.Company = "auditor_1"
 		owner.Quantity = cp.Age
 		
 		cp.Owners = append(cp.Owners, owner)
@@ -452,7 +452,6 @@
 	func GetCP(cpid string, stub *shim.ChaincodeStub) (CP, error){
 	fmt.Println("--------------In GetCP-------------")
 		var cp CP
-	/*
 		cpBytes, err := stub.GetState(cpid)
 		if err != nil {
 			fmt.Println("Error retrieving cp " + cpid)
@@ -464,7 +463,6 @@
 			fmt.Println("Error unmarshalling cp " + cpid)
 			return cp, errors.New("Error unmarshalling cp " + cpid)
 		}
-		*/	
 		return cp, nil 
 	}
 
@@ -690,7 +688,22 @@
 				fmt.Println("All success, returning allcps")
 				return allCPsBytes, nil		 
 			}
-		} else if args[0] == "GetCompany" {
+		} else if args[0] == "GetCP" {
+			fmt.Println("Getting particular cp")
+			cp, err := GetCP(args[1], stub)
+			if err != nil {
+				fmt.Println("Error Getting particular cp")
+				return nil, err
+			} else {
+				cpBytes, err1 := json.Marshal(&cp)
+				if err1 != nil {
+					fmt.Println("Error marshalling the cp")
+					return nil, err1
+				}	
+				fmt.Println("All success, returning the cp")
+				return cpBytes, nil		 
+			}
+		}	else if args[0] == "GetCompany" {
 			fmt.Println("Getting the company")
 			company, err := GetCompany(args[1], stub)
 			if err != nil {
@@ -717,24 +730,7 @@
 			fmt.Println("All success, returning from generic")
 			return bytes, nil		
 		} 
-		/* Commented By Ankit
-		else if args[0] == "GetCP" {
-			fmt.Println("Getting particular cp")
-			cp, err := GetCP(args[1], stub)
-			if err != nil {
-				fmt.Println("Error Getting particular cp")
-				return nil, err
-			} else {
-				cpBytes, err1 := json.Marshal(&cp)
-				if err1 != nil {
-					fmt.Println("Error marshalling the cp")
-					return nil, err1
-				}	
-				fmt.Println("All success, returning the cp")
-				return cpBytes, nil		 
-			}
-		}	*/
-		
+
 		return nil, nil		//Added by ankit
 	}
 
