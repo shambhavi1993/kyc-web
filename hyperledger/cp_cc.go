@@ -77,13 +77,6 @@
 			(msInt%millisPerSecond)*nanosPerMillisecond), nil
 	}
 
-
-
-	type Owner struct {
-		Company string    `json:"company"`
-		Quantity string   `json:"quantity"`
-	}
-
 	type CP struct {
 		CUSIP     string  `json:"cusip"`
 		Name      string  `json:"ticker"`
@@ -91,7 +84,7 @@
 		Age       string  `json:"qty"`
 		City  	  string  `json:"discount"`
 		State	  string  `json:"maturity"`
-		Owners    []Owner `json:"owner"`
+		Owner     string  `json:"owner"`
 		Issuer    string  `json:"issuer"`
 		IssueDate string  `json:"issueDate"`
 	}
@@ -294,11 +287,7 @@
 		account.AssetsIds = append(account.AssetsIds, cp.CUSIP)
 
 		// Set the issuer to be the owner of all quantity
-		var owner Owner
-		owner.Company = "auditor_1"
-		owner.Quantity = cp.Age
-		
-		cp.Owners = append(cp.Owners, owner)
+		cp.Owner = "auditor_1"
 
 		suffix, err := generateCUSIPSuffix(cp.IssueDate, cp.Age)
 		if err != nil {
@@ -374,40 +363,7 @@
 			fmt.Println("--------------------------------------------------------Everything goes fine--------------------------------------------")
 			fmt.Println("Issue commercial paper %+v\n", cp)
 			return nil, nil
-		} /* else {
-			fmt.Println("CUSIP exists")
-			
-			var cprx CP
-			fmt.Println("Unmarshalling CP " + cp.CUSIP)
-			err = json.Unmarshal(cpRxBytes, &cprx)
-			if err != nil {
-				fmt.Println("Error unmarshalling cp " + cp.CUSIP)
-				return nil, errors.New("Error unmarshalling cp " + cp.CUSIP)
-			}
-			
-			cprx.Qty = cprx.Qty + cp.Qty
-			
-			for key, val := range cprx.Owners {
-				if val.Company == cp.Issuer {
-					cprx.Owners[key].Quantity += cp.Qty
-					break
-				}
-			}
-					
-			cpWriteBytes, err := json.Marshal(&cprx)
-			if err != nil {
-				fmt.Println("Error marshalling cp")
-				return nil, errors.New("Error issuing commercial paper")
-			}
-			err = stub.PutState(cpPrefix+cp.CUSIP, cpWriteBytes)
-			if err != nil {
-				fmt.Println("Error issuing paper")
-				return nil, errors.New("Error issuing commercial paper")
-			}
-
-			fmt.Println("Updated commercial paper %+v\n", cprx)
-			return nil, nil
-		} */
+		} 
 		return nil, nil
 	}
 
