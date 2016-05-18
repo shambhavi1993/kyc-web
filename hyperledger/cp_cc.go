@@ -547,7 +547,11 @@
 			fromCompany.CashBalance += amountToBeTransferred
 
 			toCompanyBytesToWrite, err := json.Marshal(&toCompany)
+			fmt.Println("******************toCompanyData**********")
+			fmt.Println(toCompanyBytesToWrite)
+			fmt.Println("*****************************************")
 			if err != nil {
+				fmt.Println(err)
 				fmt.Println("Error marshalling the toCompany")
 				return nil, errors.New("Error marshalling the toCompany")
 			}
@@ -560,7 +564,11 @@
 				
 			// From company
 			fromCompanyBytesToWrite, err := json.Marshal(&fromCompany)
+			fmt.Println("******************toCompanyData**********")
+			fmt.Println(fromCompanyBytesToWrite)
+			fmt.Println("*****************************************")
 			if err != nil {
+				fmt.Println(err)
 				fmt.Println("Error marshalling the fromCompany")
 				return nil, errors.New("Error marshalling the fromCompany")
 			}
