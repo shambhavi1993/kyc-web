@@ -100,7 +100,7 @@
 		CUSIP       string   `json:"cusip"`
 		FromCompany string   `json:"fromCompany"`
 		ToCompany   string   `json:"toCompany"`
-		Quantity    string   `json:"quantity"`
+		Quantity    int      `json:"quantity"`
 		Discount    string   `json:"discount"`
 	}
 
