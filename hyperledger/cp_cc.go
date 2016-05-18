@@ -504,6 +504,15 @@
 		
 			
 		
+	
+		
+		
+		
+		
+		// Payment Transfer Start
+		
+	if tr.ToCompany	== "bank" {
+			
 		// Get state for Account of to company
 		var toCompany Account
 		fmt.Println("Getting State on ToCompany " + tr.ToCompany)
@@ -523,13 +532,7 @@
 			fmt.Println("Error unmarshalling account " + tr.ToCompany)
 			return nil, errors.New("Error unmarshalling account " + tr.ToCompany)
 		}	
-		
-		
-		
-		
-		// Payment Transfer Start
-		
-	if tr.ToCompany	== "bank" {
+	
 			amountToBeTransferred := 10.0
 			
 			// If toCompany doesn't have enough cash to buy the papers
