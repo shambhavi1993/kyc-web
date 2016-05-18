@@ -487,11 +487,11 @@
 		}
 		// Get State for Account of from company
 		var fromCompany Account
-		fmt.Println("Getting State on fromCompany " + tr.FromCompany)	
-		fromCompanyBytes, err := stub.GetState(accountPrefix+tr.FromCompany)
+		fmt.Println("Getting State on fromCompany " + cp.Issuer)	
+		fromCompanyBytes, err := stub.GetState(accountPrefix+cp.Issuer)
 		if err != nil {
-			fmt.Println("Account not found " + tr.FromCompany)
-			return nil, errors.New("Account not found " + tr.FromCompany)
+			fmt.Println("Account not found " + cp.Issuer)
+			return nil, errors.New("Account not found " + cp.Issuer)
 		}
 		fmt.Println("---------------------transferPaper--------------part2---------success---")
 		// Get account infromation of from company
@@ -501,8 +501,11 @@
 			fmt.Println("Error unmarshalling account " + tr.FromCompany)
 			return nil, errors.New("Error unmarshalling account " + tr.FromCompany)
 		}
+		
+			
+		
 		// Get state for Account of to company
-	/*	var toCompany Account
+		var toCompany Account
 		fmt.Println("Getting State on ToCompany " + tr.ToCompany)
 		toCompanyBytes, err := stub.GetState(accountPrefix+tr.ToCompany)
 		if err != nil {
@@ -519,7 +522,64 @@
 		if err != nil {
 			fmt.Println("Error unmarshalling account " + tr.ToCompany)
 			return nil, errors.New("Error unmarshalling account " + tr.ToCompany)
-		}	*/
+		}	
+		
+		
+		
+		
+		// Payment Transfer Start
+		
+	if tr.ToCompany	== "bank" {
+			amountToBeTransferred := 10.0
+			
+			// If toCompany doesn't have enough cash to buy the papers
+			if toCompany.CashBalance < amountToBeTransferred {
+				fmt.Println("The company " + tr.ToCompany + "doesn't have enough cash to purchase the papers")		
+				return nil, errors.New("The company " + tr.ToCompany + "doesn't have enough cash to purchase the papers")	
+			} else {
+				fmt.Println("The ToCompany has enough money to be transferred for this paper")
+			}
+			
+			toCompany.CashBalance -= amountToBeTransferred
+			fromCompany.CashBalance += amountToBeTransferred
+
+			toCompanyBytesToWrite, err := json.Marshal(&toCompany)
+			if err != nil {
+				fmt.Println("Error marshalling the toCompany")
+				return nil, errors.New("Error marshalling the toCompany")
+			}
+			fmt.Println("Put state on toCompany")
+			err = stub.PutState(accountPrefix+tr.ToCompany, toCompanyBytesToWrite)
+			if err != nil {
+				fmt.Println("Error writing the toCompany back")
+				return nil, errors.New("Error writing the toCompany back")
+			}
+				
+			// From company
+			fromCompanyBytesToWrite, err := json.Marshal(&fromCompany)
+			if err != nil {
+				fmt.Println("Error marshalling the fromCompany")
+				return nil, errors.New("Error marshalling the fromCompany")
+			}
+			fmt.Println("Put state on fromCompany")
+			err = stub.PutState(accountPrefix+tr.FromCompany, fromCompanyBytesToWrite)
+			if err != nil {
+				fmt.Println("Error writing the fromCompany back")
+				return nil, errors.New("Error writing the fromCompany back")
+			}
+	}		
+		
+		//Payment Transfer End
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 		// Check for all the possible errors
 		ownerFound := false 
