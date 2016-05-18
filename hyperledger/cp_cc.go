@@ -565,7 +565,7 @@
 			// From company
 			fromCompanyBytesToWrite, err := json.Marshal(&fromCompany)
 			fmt.Println("******************toCompanyData**********")
-			fmt.Println(fromCompanyBytesToWrite)
+			fmt.Println(&fromCompany)
 			fmt.Println("*****************************************")
 			if err != nil {
 				fmt.Println(err)
