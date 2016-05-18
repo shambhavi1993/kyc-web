@@ -466,6 +466,7 @@
 		fmt.Println("Unmarshalling Transaction")
 		err := json.Unmarshal([]byte(args[0]), &tr)
 		if err != nil {
+			fmt.Println(err)
 			fmt.Println("Error Unmarshalling Transaction")
 			return nil, errors.New("Invalid commercial paper issue")
 		}
