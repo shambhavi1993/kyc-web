@@ -165,6 +165,7 @@
 
 	func (t *SimpleChaincode) createAccount(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 		// Obtain the username to associate with the account
+		var account Account
 	 if len(args) != 1 {
 			fmt.Println("Error obtaining username")
 			return nil, errors.New("createAccount accepts a single username argument")
@@ -175,7 +176,11 @@
 		var assetIds []string
 		suffix := "000A"
 		prefix := username + suffix
-		var account = Account{ID: username, Prefix: prefix, CashBalance: 100.0, AssetsIds: assetIds}
+		if username == "bank" {
+					account = Account{ID: username, Prefix: prefix, CashBalance: 1000000.0, AssetsIds: assetIds}
+			} else {
+					account = Account{ID: username, Prefix: prefix, CashBalance: 100.0, AssetsIds: assetIds}
+			}
 		accountBytes, err := json.Marshal(&account)
 		if err != nil {
 			fmt.Println("error creating account" + account.ID)
