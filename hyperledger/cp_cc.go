@@ -502,7 +502,7 @@
 			return nil, errors.New("Error unmarshalling account " + tr.FromCompany)
 		}
 		// Get state for Account of to company
-		var toCompany Account
+	/*	var toCompany Account
 		fmt.Println("Getting State on ToCompany " + tr.ToCompany)
 		toCompanyBytes, err := stub.GetState(accountPrefix+tr.ToCompany)
 		if err != nil {
@@ -519,7 +519,7 @@
 		if err != nil {
 			fmt.Println("Error unmarshalling account " + tr.ToCompany)
 			return nil, errors.New("Error unmarshalling account " + tr.ToCompany)
-		}
+		}	*/
 
 		// Check for all the possible errors
 		ownerFound := false 
