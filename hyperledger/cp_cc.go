@@ -460,7 +460,7 @@
 		if len(args) != 1 {
 			return nil, errors.New("Incorrect number of arguments. Expecting commercial paper record")
 		}
-		
+		fmt.Println("---------------------transferPaper--------------part0---------success---")
 		var tr Transaction
 		// Getting user input
 		fmt.Println("Unmarshalling Transaction")
