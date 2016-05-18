@@ -565,7 +565,7 @@
 			// From company
 			fromCompanyBytesToWrite, err := json.Marshal(&fromCompany)
 			fmt.Println("******************toCompanyData**********")
-			fmt.Println(&fromCompany)
+			fmt.Println(fromCompany)
 			fmt.Println("*****************************************")
 			if err != nil {
 				fmt.Println(err)
@@ -573,7 +573,7 @@
 				return nil, errors.New("Error marshalling the fromCompany")
 			}
 			fmt.Println("Put state on fromCompany")
-			err = stub.PutState(accountPrefix+tr.FromCompany, fromCompanyBytesToWrite)
+			err = stub.PutState(accountPrefix+cp.Issuer, fromCompanyBytesToWrite)
 			if err != nil {
 				fmt.Println("Error writing the fromCompany back")
 				return nil, errors.New("Error writing the fromCompany back")
