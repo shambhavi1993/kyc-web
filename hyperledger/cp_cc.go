@@ -467,7 +467,7 @@
 	func GetCompany(companyID string, stub *shim.ChaincodeStub) (Account, error){
 	fmt.Println("--------------In GetCompany-------------")
 		var company Account
-	/*	companyBytes, err := stub.GetState(accountPrefix+companyID)
+		companyBytes, err := stub.GetState(accountPrefix+companyID)
 		if err != nil {
 			fmt.Println("Account not found " + companyID)
 			return company, errors.New("Account not found " + companyID)
@@ -478,7 +478,7 @@
 			fmt.Println("Error unmarshalling account " + companyID + "\n err:" + err.Error())
 			return company, errors.New("Error unmarshalling account " + companyID)
 		}
-		*/
+		
 		return company, nil 
 	}
 
@@ -685,21 +685,6 @@
 				fmt.Println("All success, returning allcps")
 				return allCPsBytes, nil		 
 			}
-		} /*else if args[0] == "GetCP" {
-			fmt.Println("Getting particular cp")
-			cp, err := GetCP(args[1], stub)
-			if err != nil {
-				fmt.Println("Error Getting particular cp")
-				return nil, err
-			} else {
-				cpBytes, err1 := json.Marshal(&cp)
-				if err1 != nil {
-					fmt.Println("Error marshalling the cp")
-					return nil, err1
-				}	
-				fmt.Println("All success, returning the cp")
-				return cpBytes, nil		 
-			}
 		} else if args[0] == "GetCompany" {
 			fmt.Println("Getting the company")
 			company, err := GetCompany(args[1], stub)
@@ -726,7 +711,25 @@
 
 			fmt.Println("All success, returning from generic")
 			return bytes, nil		
-		} */
+		} 
+		/* Commented By Ankit
+		else if args[0] == "GetCP" {
+			fmt.Println("Getting particular cp")
+			cp, err := GetCP(args[1], stub)
+			if err != nil {
+				fmt.Println("Error Getting particular cp")
+				return nil, err
+			} else {
+				cpBytes, err1 := json.Marshal(&cp)
+				if err1 != nil {
+					fmt.Println("Error marshalling the cp")
+					return nil, err1
+				}	
+				fmt.Println("All success, returning the cp")
+				return cpBytes, nil		 
+			}
+		}	*/
+		
 		return nil, nil		//Added by ankit
 	}
 
