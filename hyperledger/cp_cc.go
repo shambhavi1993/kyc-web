@@ -175,7 +175,7 @@
 		var assetIds []string
 		suffix := "000A"
 		prefix := username + suffix
-		var account = Account{ID: username, Prefix: prefix, CashBalance: 10000000.0, AssetsIds: assetIds}
+		var account = Account{ID: username, Prefix: prefix, CashBalance: 100.0, AssetsIds: assetIds}
 		accountBytes, err := json.Marshal(&account)
 		if err != nil {
 			fmt.Println("error creating account" + account.ID)
