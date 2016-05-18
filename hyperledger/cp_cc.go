@@ -512,10 +512,10 @@
 		fmt.Println("---------------------transferPaper--------------part3---------success---")
 		// Get Account infomation of to company
 		fmt.Println("Unmarshalling tocompany")
+		err = json.Unmarshal(toCompanyBytes, &toCompany)
 		fmt.Println(err)
 		fmt.Println(toCompanyBytes)
 		fmt.Println("---------------------transferPaper--------------part4---------success---")
-		err = json.Unmarshal(toCompanyBytes, &toCompany)
 		if err != nil {
 			fmt.Println("Error unmarshalling account " + tr.ToCompany)
 			return nil, errors.New("Error unmarshalling account " + tr.ToCompany)
