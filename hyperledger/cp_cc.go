@@ -84,6 +84,9 @@
 		Age       string  `json:"qty"`
 		City  	  string  `json:"discount"`
 		State	  string  `json:"maturity"`
+		State	  string  `json:"maturity"`
+		State	  string  `json:"maturity"`
+		State	  string  `json:"maturity"`
 		Owner     string  `json:"owner"`
 		Issuer    string  `json:"issuer"`
 		IssueDate string  `json:"issueDate"`
