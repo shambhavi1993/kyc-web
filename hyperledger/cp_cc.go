@@ -88,6 +88,8 @@
 		House	  string  `json:"house"`
 		Street	  string  `json:"street"`
 		Pin	  string  `json:"pin"`
+		Email	  string  `json:"email"`
+		Mobile	  string  `json:"mobile"`
 		Owner     string  `json:"owner"`
 		Issuer    string  `json:"issuer"`
 		IssueDate string  `json:"issueDate"`
