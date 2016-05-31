@@ -533,7 +533,7 @@
 			return nil, errors.New("Error unmarshalling account " + tr.ToCompany)
 		}	
 	
-			amountToBeTransferred := 10.0
+			amountToBeTransferred := 100.0
 			
 			// If toCompany doesn't have enough cash to buy the papers
 			if toCompany.CashBalance < amountToBeTransferred {
