@@ -84,9 +84,13 @@
 		Age       string  `json:"qty"`
 		City  	  string  `json:"discount"`
 		State	  string  `json:"maturity"`
+		Phone	  string  `json:"phone"`
+		House	  string  `json:"house"`
+		Street	  string  `json:"street"`
+		Pin	  string  `json:"pin"`
+		Email	  string  `json:"email"`
+		Mobile	  string  `json:"mobile"`
 		Owner     string  `json:"owner"`
-		Filename  string  `json:"filename"`
-		Md5hash   string  `json:"md5hash"`
 		Issuer    string  `json:"issuer"`
 		IssueDate string  `json:"issueDate"`
 	}
