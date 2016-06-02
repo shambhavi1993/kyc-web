@@ -771,6 +771,21 @@
 				fmt.Println("All success, returning allcps")
 				return allCPsBytes, nil		 
 			}
+		} else if args[0] == "GetAllContracts" {
+			fmt.Println("Getting all Contracts")
+			allContracts, err := GetAllContracts(stub)
+			if err != nil {
+				fmt.Println("Error from getallcontracts in query method")
+				return nil, err
+			} else {
+				allContractsBytes, err1 := json.Marshal(&allContracts)
+				if err1 != nil {
+					fmt.Println("Error marshalling allcontracts in query method")
+					return nil, err1
+				}	
+				fmt.Println("All success, returning allcontracts")
+				return allContractsBytes, nil		 
+			}
 		} else if args[0] == "GetCP" {
 			fmt.Println("Getting particular cp")
 			cp, err := GetCP(args[1], stub)
@@ -817,6 +832,44 @@
 		return nil, nil		//Added by ankit
 	}
 
+		func GetAllContracts(stub *shim.ChaincodeStub) ([]BANKCONTRACT, error){
+	fmt.Println("--------------In GetAllCPs-------------")	
+		var allContracts []BANKCONTRACT
+		
+		// Get list of all the keys
+		keysBytes, err := stub.GetState("BankKeys")
+		if err != nil {
+			fmt.Println("Error retrieving Bank keys in GetAllContracts")
+			return nil, errors.New("Error retrieving Bank keys in GetAllContracts")
+		}
+		var keys []string
+		err = json.Unmarshal(keysBytes, &keys) 	
+		if err != nil {
+			fmt.Println("Error unmarshalling Bank keys in GetAllContracts")
+			fmt.Println(err)
+			return nil, errors.New("Error unmarshalling Bank keys in GetAllContracts")
+		}
+
+		// Get all the cps
+		for _, value := range keys {
+			fmt.Println("------------------------Keys-----------------"+value)
+			bankcontractBytes, err := stub.GetState(value)
+			
+			var bankcontract BANKCONTRACT
+			err = json.Unmarshal(bankcontractBytes, &bankcontract)
+			if err != nil {
+				fmt.Println("Error retrieving BANK CONTRACT " + value)
+				return nil, errors.New("Error retrieving BANK CONTRACT " + value)
+			}
+			
+			fmt.Println("Appending BANK CONTRACT" + value)
+			allContracts = append(allContracts, bankcontract)
+		}	
+		fmt.Println("-----------------------Everything goes fine in GetAllContracts------------------")
+		return allContracts, nil 
+	}
+	
+	
 	func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 		fmt.Println("run is running " + function)
 		return t.Invoke(stub, function, args)
