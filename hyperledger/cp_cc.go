@@ -84,15 +84,19 @@
 		Age       string  `json:"qty"`
 		City  	  string  `json:"discount"`
 		State	  string  `json:"maturity"`
-		Phone	  string  `json:"phone"`
-		House	  string  `json:"house"`
-		Street	  string  `json:"street"`
-		Pin	  string  `json:"pin"`
-		Email	  string  `json:"email"`
-		Mobile	  string  `json:"mobile"`
 		Owner     string  `json:"owner"`
+		Filename  string  `json:"filename"`
+		Md5hash   string  `json:"md5hash"`
 		Issuer    string  `json:"issuer"`
 		IssueDate string  `json:"issueDate"`
+	}
+	
+	type BANKCONTRACT struct {
+		CONTRACTID		 string  `json:"conractid"`
+		BANKID   		 string  `json:"bID"`
+		BANKNAME     	 string  `json:"bName"`
+		BANKVALIDATORS   string  `json:"bValidators"`
+		COMMISSION       string  `json:"bCommission"`
 	}
 
 	type Account struct {
@@ -118,6 +122,10 @@
 		err := stub.PutState("PaperKeys", blankBytes)
 		if err != nil {
 			fmt.Println("Failed to initialize paper key collection")
+		}
+		error := stub.PutState("BankKeys", blankBytes)
+		if error != nil {
+			fmt.Println("Failed to initialize bank key collection")
 		}
 
 		fmt.Println("Initialization complete")
@@ -539,7 +547,7 @@
 			return nil, errors.New("Error unmarshalling account " + tr.ToCompany)
 		}	
 	
-			amountToBeTransferred := 100.0
+			amountToBeTransferred := 10.0
 			
 			// If toCompany doesn't have enough cash to buy the papers
 			if toCompany.CashBalance < amountToBeTransferred {
@@ -631,7 +639,83 @@
 	}
 
 
+	func (t *SimpleChaincode) issueBankContract(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+
+		//need one arg
+		if len(args) != 1 {
+			fmt.Println("error invalid arguments")
+			return nil, errors.New("Incorrect number of arguments. Expecting bank contract record")
+		}
+
+		var bankcontract BANKCONTRACT
+		var err error
+		suffix := "000C"
+		fmt.Println("Unmarshalling Bank Contract")
+		err = json.Unmarshal([]byte(args[0]), &bankcontract)
+		if err != nil {
+			fmt.Println("error invalid bank contract")
+			return nil, errors.New("Invalid bank contract")
+		}
+
 	
+		fmt.Println("Marshalling CP bytes")
+		bankcontract.CONTRACTID = bankcontract.BANKID + suffix
+		fmt.Println("Getting State on BANK CONTRACT " + bankcontract.CONTRACTID)
+		bankcontractRxBytes, err := stub.GetState(bankcontract.CONTRACTID)
+		if bankcontractRxBytes == nil {
+			fmt.Println("Bank contract does not exist, creating it")
+			bankcontractBytes, err := json.Marshal(&bankcontract)
+			if err != nil {
+				fmt.Println("Error marshalling Bank Contract")
+				return nil, errors.New("Error issuing Bank Contract")
+			}
+			err = stub.PutState(bankcontract.CONTRACTID, bankcontractBytes)
+			if err != nil {
+				fmt.Println("Error issuing Bank Contract")
+				return nil, errors.New("Error issuing Bank Contract")
+			}
+			
+			// Update the bank keys by adding the new key
+			fmt.Println("Getting Bank Keys")
+			keysBytes, err := stub.GetState("BankKeys")
+			if err != nil {
+				fmt.Println("Error retrieving bank keys")
+				return nil, errors.New("Error retrieving bank keys")
+			}
+			var keys []string
+			err = json.Unmarshal(keysBytes, &keys)
+			if err != nil {
+				fmt.Println("Error unmarshel keys")
+				return nil, errors.New("Error unmarshalling bank keys ")
+			}
+			
+			fmt.Println("Appending the new key to Paper Keys")
+			foundKey := false
+			for _, key := range keys {
+				if key == bankcontract.CONTRACTID {
+					foundKey = true
+				}
+			}
+			if foundKey == false {
+				keys = append(keys, bankcontract.CONTRACTID)
+				keysBytesToWrite, err := json.Marshal(&keys)
+				if err != nil {
+					fmt.Println("Error marshalling keys")
+					return nil, errors.New("Error marshalling the keys")
+				}
+				fmt.Println("Put state on BankKeys")
+				err = stub.PutState("BankKeys", keysBytesToWrite)
+				if err != nil {
+					fmt.Println("Error writting Bank keys back")
+					return nil, errors.New("Error writing the Bank keys back")
+				}
+			}
+			fmt.Println("--------------------------------------------------------Everything goes fine--------------------------------------------")
+			fmt.Println("Issue Bank Contract %+v\n", bankcontract)
+			return nil, nil
+		} 
+		return nil, nil
+	}
 	
 	
 	
@@ -741,6 +825,10 @@
 			fmt.Println("Firing issueCommercialPaper")
 			//Create an asset with some value
 			return t.issueCommercialPaper(stub, args)
+		} else if function == "issueBankContract" {
+			fmt.Println("Firing issueBankContract")
+			//Create an asset with some value
+			return t.issueBankContract(stub, args)
 		} else if function == "transferPaper" {
 			fmt.Println("Firing cretransferPaperateAccounts")
 			return t.transferPaper(stub, args)
