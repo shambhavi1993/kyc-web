@@ -79,6 +79,7 @@
 
 	type CP struct {
 		CUSIP     string  `json:"cusip"`
+		Contract  string  `json:"contract"`
 		Name      string  `json:"ticker"`
 		Gender    string  `json:"par"`
 		Age       string  `json:"qty"`
@@ -280,13 +281,31 @@
 		var cp CP
 		var err error
 		var account Account
-
+		var bankcontract BANKCONTRACT
+		
 		fmt.Println("Unmarshalling CP")
 		err = json.Unmarshal([]byte(args[0]), &cp)
 		if err != nil {
 			fmt.Println("error invalid paper issue")
 			return nil, errors.New("Invalid commercial paper issue")
 		}
+		
+		fmt.Println("Getting state of Bank Contract- " + cp.Contract)
+		contractBytes, err := stub.GetState(accountPrefix + cp.Contract)
+		if err != nil {
+			fmt.Println("Error Getting state of Contract - " + cp.Contract)
+			return nil, errors.New("Error retrieving contract " + cp.Contract)
+		}
+		err = json.Unmarshal(contractBytes, &bankcontract)
+		if err != nil {
+			fmt.Println("Error Unmarshalling Bank Contract")
+			return nil, errors.New("Error retrieving Bank Contract " + cp.Contract)
+		}
+		fmt.Println("-----------------Everything goes fine-------------")
+		
+		//Split Bank Validators
+		validators := strings.Split(bankcontract.BANKVALIDATORS, ",")
+		
 		//generate the CUSIP
 		//get account prefix
 		fmt.Println("Getting state of - " + accountPrefix + cp.Issuer)
@@ -305,7 +324,7 @@
 		account.AssetsIds = append(account.AssetsIds, cp.CUSIP)
 
 		// Set the issuer to be the owner of all quantity
-		cp.Owner = "auditor_1"
+		cp.Owner = validators[0]
 
 		suffix, err := generateCUSIPSuffix(cp.IssueDate, cp.Age)
 		if err != nil {
