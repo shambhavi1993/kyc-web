@@ -188,7 +188,7 @@
 		var assetIds []string
 		suffix := "000A"
 		prefix := username + suffix
-		if username == "bank" {
+		if strings.Contains(username, "bank") {
 					account = Account{ID: username, Prefix: prefix, CashBalance: 1000000.0, AssetsIds: assetIds}
 			} else {
 					account = Account{ID: username, Prefix: prefix, CashBalance: 100.0, AssetsIds: assetIds}
