@@ -522,6 +522,30 @@
 			fmt.Println("Error unmarshalling cp " + tr.CUSIP)
 			return nil, errors.New("Error unmarshalling cp " + tr.CUSIP)
 		}
+		
+		
+		var bankcontract BANKCONTRACT
+		fmt.Println("Getting state of Bank Contract- " + cp.Contract)
+		contractBytes, err := stub.GetState(cp.Contract)
+		if err != nil {
+			fmt.Println("Error Getting state of Contract - " + cp.Contract)
+			return nil, errors.New("Error retrieving contract " + cp.Contract)
+		}
+		err = json.Unmarshal(contractBytes, &bankcontract)
+		if err != nil {
+			fmt.Println("Error Unmarshalling Bank Contract")
+			return nil, errors.New("Error retrieving Bank Contract " + cp.Contract)
+		}
+		fmt.Println("-----------------Everything goes fine-------------")
+		
+		//Split Bank Validators
+		validators := strings.Split(bankcontract.BANKVALIDATORS, ",")
+		if tr.ToCompany == "auditor_2" {
+			tr.ToCompany = validators[1]
+		} else {
+			tr.ToCompany = bankcontract.BANKID
+		}
+		
 		// Get State for Account of from company
 		var fromCompany Account
 		fmt.Println("Getting State on fromCompany " + cp.Issuer)	
@@ -548,7 +572,7 @@
 		
 		// Payment Transfer Start
 		
-	if tr.ToCompany	== "bank" {
+	if tr.ToCompany	== bankcontract.BANKID {
 			
 		// Get state for Account of to company
 		var toCompany Account
@@ -569,8 +593,12 @@
 			fmt.Println("Error unmarshalling account " + tr.ToCompany)
 			return nil, errors.New("Error unmarshalling account " + tr.ToCompany)
 		}	
-	
-			amountToBeTransferred := 10.0
+			
+			commissionToBeTransferred, err := strconv.ParseFloat(bankcontract.COMMISSION, 64)
+			if err != nil {
+				fmt.Println("Error while parsing Bank Commission")
+			}
+			amountToBeTransferred := commissionToBeTransferred
 			
 			// If toCompany doesn't have enough cash to buy the papers
 			if toCompany.CashBalance < amountToBeTransferred {
