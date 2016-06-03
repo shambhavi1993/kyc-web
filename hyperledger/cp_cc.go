@@ -291,7 +291,7 @@
 		}
 		
 		fmt.Println("Getting state of Bank Contract- " + cp.Contract)
-		contractBytes, err := stub.GetState(accountPrefix + cp.Contract)
+		contractBytes, err := stub.GetState(cp.Contract)
 		if err != nil {
 			fmt.Println("Error Getting state of Contract - " + cp.Contract)
 			return nil, errors.New("Error retrieving contract " + cp.Contract)
