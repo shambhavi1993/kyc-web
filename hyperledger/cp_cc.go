@@ -540,7 +540,7 @@
 		
 		//Split Bank Validators
 		validators := strings.Split(bankcontract.BANKVALIDATORS, ",")
-		if tr.ToCompany == "auditor_2" {
+		if tr.FromCompany == validators[0] {
 			tr.ToCompany = validators[1]
 		} else {
 			tr.ToCompany = bankcontract.BANKID
