@@ -171,7 +171,7 @@
 			fmt.Println("created account" + accountPrefix + account.ID)
 		}
 
-		fmt.Println("Accounts created") 
+		fmt.Println("--------Accounts created--------") 
 		return nil, nil
 
 	}
