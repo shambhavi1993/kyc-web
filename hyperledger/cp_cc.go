@@ -93,6 +93,7 @@
 		Mobile	  string  `json:"mobile"`
 		Fmrdata	  string  `json:"fmrdata"`
 		Owner     string  `json:"owner"`
+		Filename  string  `json:"filename"`
 		Issuer    string  `json:"issuer"`
 		IssueDate string  `json:"issueDate"`
 	}
