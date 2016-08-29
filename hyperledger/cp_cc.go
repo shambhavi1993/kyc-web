@@ -96,6 +96,7 @@
 		Filename  string  `json:"filename"`
 		Issuer    string  `json:"issuer"`
 		IssueDate string  `json:"issueDate"`
+		DOCUMENTS	[]DOCUMENT
 	}
 	
 	type BANKCONTRACT struct {
@@ -104,6 +105,14 @@
 		BANKNAME     	 string  `json:"bName"`
 		BANKVALIDATORS   string  `json:"bValidators"`
 		COMMISSION       string  `json:"bCommission"`
+	}
+	
+	type DOCUMENT struct {
+		DID		string		`json:"id"`
+		CUSIP     string  `json:"cusip"`
+		DOCUMENTID	string	`json:"dID"`
+		DOCUMENTTYPE	string	`json:"documents"`
+		FILE		string	`json:"myFile"`
 	}
 
 	type Account struct {
@@ -133,6 +142,10 @@
 		error := stub.PutState("BankKeys", blankBytes)
 		if error != nil {
 			fmt.Println("Failed to initialize bank key collection")
+		}
+		errs := stub.PutState("DocKeys", blankBytes)
+		if errs != nil {
+			fmt.Println("Failed to initialize document key collection")
 		}
 
 		fmt.Println("Initialization complete")
@@ -770,8 +783,100 @@
 		return nil, nil
 	}
 	
+//=============================================Upload====================================	
+	func (t *SimpleChaincode) getUploadedDocuments(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	if len(args) != 1 {
+		fmt.Println("error invalid arguments")
+		return nil, errors.New("Incorrect number of arguments. Expecting commercial paper record")
+	}
+	var cp CP
+	var doc DOCUMENT
+	var err error
+	suffix := "000C"
+	fmt.Println("Unmarshalling CP")
+	err = json.Unmarshal([]byte(args[0]), &doc)
+	if err != nil {
+		fmt.Println("error invalid paper issue")
+		return nil, errors.New("Invalid commercial paper issue")
+	}
 	
-	
+	fmt.Println("Marshalling Doc bytes")
+		doc.DID = doc.DID + suffix
+		fmt.Println("Getting State on Documents " + doc.DID)
+		docBytes, err := stub.GetState(doc.DID)
+		if docBytes == nil {
+			fmt.Println("Document does not exist, creating it")
+			docBytes, err := json.Marshal(&doc)
+			if err != nil {
+				fmt.Println("Error marshalling Documents")
+				return nil, errors.New("Error issuing Documents")
+			}
+			err = stub.PutState(doc.DID, docBytes)
+			if err != nil {
+				fmt.Println("Error issuing Documents")
+				return nil, errors.New("Error issuing Documents")
+			}
+			
+		}
+//=================================================================	
+// Update the Doc keys by adding the new key
+	fmt.Println("Getting Bank Keys")
+			keysBytes, err := stub.GetState("DocKeys")
+			if err != nil {
+				fmt.Println("Error retrieving doc keys")
+				return nil, errors.New("Error retrieving doc keys")
+			}
+			var keys []string
+			err = json.Unmarshal(keysBytes, &keys)
+			if err != nil {
+				fmt.Println("Error unmarshel keys")
+				return nil, errors.New("Error unmarshalling doc keys ")
+			}
+			
+			fmt.Println("Appending the new key to Paper Keys")
+			foundKey := false
+			for _, key := range keys {
+				if key == doc.DID {
+					foundKey = true
+				}
+			}
+			if foundKey == false {
+				keys = append(keys, doc.DID)
+				keysBytesToWrite, err := json.Marshal(&keys)
+				if err != nil {
+					fmt.Println("Error marshalling keys")
+					return nil, errors.New("Error marshalling the keys")
+				}
+				fmt.Println("Put state on DocKeys")
+				err = stub.PutState("DocKeys", keysBytesToWrite)
+				if err != nil {
+					fmt.Println("Error writting doc keys back")
+					return nil, errors.New("Error writing the doc keys back")
+				}
+			}
+				
+	cp.DOCUMENTS = append(cp.DOCUMENTS, doc)	
+//===============================================================================
+
+fmt.Println("Marshalling CP bytes")
+
+	fmt.Println("Getting State on CP " + cp.CUSIP)
+	uploadBytes1, err := stub.GetState(cp.CUSIP)
+	if uploadBytes1 == nil {
+		fmt.Println("CUSIP does not exist, creating it")
+		uploadBytes1, err := json.Marshal(&cp)
+		if err != nil {
+			fmt.Println("Error marshalling cp")
+			return nil, errors.New("Error issuing documents record")
+		}
+		err = stub.PutState(cp.CUSIP, uploadBytes1)
+		if err != nil {
+			fmt.Println("Error issuing paper")
+			return nil, errors.New("Error issuing documents record")
+		}
+
+	}
+}	
 	
 	
 	
@@ -1019,4 +1124,4 @@
 		29: "V",
 		30: "W",
 		31: "X",
-	}
+}
