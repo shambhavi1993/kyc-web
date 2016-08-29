@@ -876,6 +876,7 @@ fmt.Println("Marshalling CP bytes")
 		}
 
 	}
+	return nil, nil
 }	
 	
 	
@@ -1036,6 +1037,10 @@ fmt.Println("Marshalling CP bytes")
 			fmt.Println("Firing issueCommercialPaper")
 			//Create an asset with some value
 			return t.issueCommercialPaper(stub, args)
+		} else if function == "getUploadedDocuments" {
+			fmt.Println("Firing getUploadedDocuments")
+			//Create an asset with some value
+			return t.getUploadedDocuments(stub, args)
 		} else if function == "issueBankContract" {
 			fmt.Println("Firing issueBankContract")
 			//Create an asset with some value
@@ -1052,7 +1057,7 @@ fmt.Println("Marshalling CP bytes")
 		} else if function == "init" {
 			fmt.Println("Firing init")
 			return t.Init(stub, "init", args)
-		}
+		} 
 
 		return nil, errors.New("Received unknown function invocation")
 	}
