@@ -474,7 +474,64 @@
 		return cp, nil 
 	}
 
+//====================Get All Document=============================
+	func getAllDocs(stub *shim.ChaincodeStub) ([]DOCUMENT, error){
+	fmt.Println("--------------In getAllDocs-------------")	
+		var allDocs []DOCUMENT
+		
+		// Get list of all the keys
+		keysBytes, err := stub.GetState("DocKeys")
+		if err != nil {
+			fmt.Println("Error retrieving doc keys")
+			return nil, errors.New("Error retrieving doc keys")
+		}
+		var keys []string
+		err = json.Unmarshal(keysBytes, &keys) 	
+		if err != nil {
+			fmt.Println("Error unmarshalling doc keys----------")
+			fmt.Println(err)
+			return nil, errors.New("Error unmarshalling doc keys")
+		}
 
+		// Get all the docs
+		for _, count := range keys {
+			fmt.Println("------------------------Document Keys-----------------"+count)
+			docBytes, err := stub.GetState(count)
+			
+			var doc DOCUMENT
+			err = json.Unmarshal(docBytes, &doc)
+			if err != nil {
+				fmt.Println("Error retrieving doc " + count)
+				return nil, errors.New("Error retrieving doc " + count)
+			}
+			
+			fmt.Println("Appending Document" + count)
+			allDocs = append(allDocs, doc)
+		}	
+		fmt.Println("-----------------------Everything goes fine in getAllDocs------------------")
+		return allDocs, nil 
+	}
+	
+	
+	//====================Get Documents===============================
+	func getDoc(docid string, stub *shim.ChaincodeStub) (DOCUMENT, error){
+	fmt.Println("--------------In getDoc-------------")
+		var doc DOCUMENT
+		docBytes, err := stub.GetState(docid)
+		if err != nil {
+			fmt.Println("Error retrieving doc " + docid)
+			return doc, errors.New("Error retrieving doc " + docid)
+		}
+			
+		err = json.Unmarshal(docBytes, &doc)
+		if err != nil {
+			fmt.Println("Error unmarshalling doc " + docid)
+			return doc, errors.New("Error unmarshalling doc " + docid)
+		}
+		return doc, nil 
+	}	
+	
+//==================================Get Company================================
 	func GetCompany(companyID string, stub *shim.ChaincodeStub) (Account, error){
 	fmt.Println("--------------In GetCompany-------------")
 		var company Account
